@@ -3,12 +3,13 @@ const Product = require("../models/Product/Product");
 
 getOrderAmount = async (products) => {
     let amount = 0;
-
+    console.log(products)
     for (let i = 0; i < products.length; i++) {
-        /*
-        const productFound = await Subproduct.findById(products[i].product.subproduct._id);
+        
+        let id = products[i].product;
+        const productFound = await Product.findById(id);
         const value = productFound.price * products[i].qty;
-        amount += value; */
+        amount += value; 
     }
 
     return amount;

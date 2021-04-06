@@ -38,8 +38,7 @@ const ProductSchema = new Schema({
     },
 
     price: {
-        ref: "Price",
-        type: Schema.Types.ObjectId,
+        type: Number,
         required: true
     },
 

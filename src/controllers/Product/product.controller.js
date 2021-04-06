@@ -1,7 +1,6 @@
 productCtrl = {};
 
-const { Product, Category } = require("../../models");
-
+const { Product, Category, Color, Size, Price } = require("../../models");
 
 productCtrl.getProducts = async (req, res) => {
 
@@ -30,21 +29,7 @@ productCtrl.getProduct = async (req, res) => {
     try {
         const id = req.params.id
 
-        const subproducto = "605a6476a413da04f82817c9"
 
-
-        const [product, subproducts] = await Promise.all([
-            Product.findById(id),
-            Subproduct.findById(subproducto)
-        ])
-
-
-
-
-
-
-
-        res.json({ product, subproducts })
 
     } catch (error) {
         res.status(400).json(error);
@@ -79,12 +64,13 @@ productCtrl.getProductsByCategory = async (req, res) => {
 
 
 
-
 productCtrl.addProduct = async (req, res) => {
 
     try {
+
+        const sku = req.body.sku.toUpperCase().trim();
+
         const {
-            sku,
             tittle,
             description,
             category, //id
@@ -98,7 +84,6 @@ productCtrl.addProduct = async (req, res) => {
 
         if (await Product.findOne({ "sku": sku })) return res.json({ success: false, message: "Product already exists, Sku is in use"});
 
-        var errors = []
       
         const newProduct = new Product({
             sku,
@@ -138,8 +123,6 @@ productCtrl.updateProduct = async (req, res) => {
 };
 
 
-
-
 productCtrl.deleteProduct = async (req, res) => {
 
     try {
@@ -158,6 +141,107 @@ productCtrl.deleteProduct = async (req, res) => {
         res.status(400).json(error);
     }
 };
+
+
+//Color
+
+productCtrl.addColor = async (req, res) => {
+    try {
+        const name = req.body.name.toUpperCase().trim();
+        console.log(name)
+
+        //Verificar existencia de color
+        const colorFound = await Color.findOne({ "name": name });
+        if (colorFound) return res.status(400).send({ success: false, message: "Color already exists" });
+
+        console.log(colorFound)
+
+        const newColor = new Color({
+            name
+        });
+
+        await newColor.save();
+
+        res.status(201).json(newColor);
+        console.log("nueva color creado:", newColor);
+
+
+    } catch (error) {
+        res.json(error)
+    }
+};
+
+productCtrl.getColors = async (req, res) => {
+
+    const { desde = 0, limite = 5 } = req.query
+
+    try {
+        const [total, listColors] = await Promise.all([
+            Color.countDocuments(),
+            Color.find()
+                .skip(desde)
+                .limit(limite)
+        ])
+
+        if (total > 0) res.status(200).json({ total, listColors })
+        else res.status(404).send("no colors found")
+
+
+    } catch (error) {
+        res.status(400).json(error);
+    }
+};
+
+
+//Size
+
+productCtrl.addSize = async (req, res) => {
+    try {
+        const name = req.body.name.toUpperCase().trim();
+        console.log(name)
+
+        //Verificar existencia del size
+
+        const sizeFound = await Size.findOne({ "name": name });
+        if (sizeFound) return res.status(400).send({ success: false, message: "Size already exists" });
+
+
+        const newSize = new Size({
+            name
+        });
+
+        await newSize.save();
+
+        res.status(201).json(newSize);
+        console.log("nueva talla creada:", newSize);
+
+
+    } catch (error) {
+        res.json(error)
+    }
+};
+
+productCtrl.getSizes = async (req, res) => {
+
+    const { desde = 0, limite = 5 } = req.query
+
+    try {
+        const [total, listSizes] = await Promise.all([
+            Size.countDocuments(),
+            Size.find()
+                .skip(desde)
+                .limit(limite)
+        ])
+
+        if (total > 0) res.status(200).json({ total, listSizes})
+        else res.status(404).send("no sizes found")
+
+
+    } catch (error) {
+        res.status(400).json(error);
+    }
+};
+
 
 
 module.exports = productCtrl;

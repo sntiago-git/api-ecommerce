@@ -1,11 +1,9 @@
 orderCtrl = {};
 
 const { Order } = require("../models");
-
 const { getOrderAmount } = require("../libs/getOrderAmount");
 
 const query = [
-
     {
         path: 'user',
         select: {
@@ -16,31 +14,46 @@ const query = [
     },
 
     {
-        path: 'products.product.product',
+        path: 'products',
         select: {
-            tittle: 1
+            _id: 0
         }
     },
 
     {
-        path: 'products.product.subproduct',
+        path: 'products.product',
         select: {
-            sku: 1,
-            images: 1,
-            price: 1,
-            size: 1,
-            color: 1
-        }
+            _id: 0,
+            quantity: 0,
+            tags: 0,
+            createdAt: 0,
+            updatedAt: 0
+        },
+        populate: [
+            { path: 'category', select: { _id: 0 } },
+            { path: 'size', select: { _id: 0 } },
+            { path: 'color', select: { _id: 0 } }
+        ]
     }
 ];
 
 
 orderCtrl.getOrders = async (req, res) => {
-    try {
-        const listOrders = await Order.find().populate(query);
 
-        if (listOrders.length > 0) res.json(listOrders);
-        else res.send("No orders found");
+    const { desde = 0, limite = 5 } = req.query
+
+    try {
+
+        const [total, listOrders] = await Promise.all([
+            Order.countDocuments(),
+            Order.find()
+                .populate(query)
+                .skip(desde)
+                .limit(limite)
+        ])
+
+        if (total > 0) res.status(200).json({ total, listOrders })
+        else res.status(404).send("no orders found")
 
     } catch (error) {
         res.status(400).json(error);
@@ -58,7 +71,7 @@ orderCtrl.getOrder = async (req, res) => {
             res.json(order);
             console.log("orden solicitada: ", order)
         } else {
-            res.status(404).json("product not found");
+            res.status(404).json("Order not found");
         }
 
     } catch (error) {

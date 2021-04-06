@@ -4,7 +4,7 @@ const Product = require("./Product/Product");
 const Category = require("./Product/Category");
 const Color = require("./Product/Color");
 const Size = require("./Product/Size");
-const Price = require("./Product/Price");
+//const Price = require("./Product/Price");
 
 //Main folder
 const Order = require("./Order");
@@ -17,7 +17,6 @@ module.exports = {
     Category,
     Color,
     Size,
-    Price,
     Order,
     Role,
     User
