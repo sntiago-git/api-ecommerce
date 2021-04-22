@@ -6,15 +6,23 @@ const orderSchema = new Schema({
         ref: "User",
         type: Schema.Types.ObjectId
     },
+    
     products: [{
 
         product: {
             ref: "Product",
-            type: Schema.Types.ObjectId
+            type: Schema.Types.ObjectId,
+            required: true
         },
 
         qty: {
-            type: Number
+            type: Number,
+            required: true
+        },
+
+        size: {
+            type: String,
+            required: true
         },
 
         value: {
@@ -23,15 +31,18 @@ const orderSchema = new Schema({
     }],
 
     subtotal: {
-        type: Number
+        type: Number,
+        required: true
     },
 
     IVA: {
-        type: Number
+        type: Number,
+        required: true
     },
 
     total_value: {
-        type: Number
+        type: Number,
+        required: true
     }
 
 }, {

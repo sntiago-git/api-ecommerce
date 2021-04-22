@@ -16,6 +16,7 @@ router.post("/", [
     check("email", "Does not appear to be a valid email address").isEmail().normalizeEmail(),
     check("roles", "Role does not exists").isIn(["user", "moderator", "admin"]),
     validarCampos
+    
 ], createUser);
 
 router.get("/", [checkToken, isAdmin], getUsers);

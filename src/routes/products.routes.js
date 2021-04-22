@@ -1,40 +1,42 @@
 const { Router } = require("express");
 const router = Router();
-const { checkToken, isAdmin } = require("../middlewares")
+
+const { checkToken, isAdmin, validarCampos } = require("../middlewares")
+const { check } = require("express-validator")
 
 const {
-    getProducts,
-    addProduct,
+    getAllProducts,
+    getProductsByFilters,
     getProduct,
-    getProductsByCategory,
+    addProduct,
     updateProduct,
-    deleteProduct,
-    addColor,
-    getColors,
-    addSize,
-    getSizes
+    removeProduct
+
 } = require("../controllers/product/product.controller");
 
-router.post("/", [checkToken, isAdmin], addProduct);
 
-router.get("/", getProducts);
-router.get("/:category", getProductsByCategory);
-
-//color, price, size
-router.get("/create/color", getColors);
-router.post("/create/color", addColor);
-
-router.get("/create/size", getSizes);
-router.post("/create/size", addSize);
-//router.post("/price", addPrice);
+//Consultas
+router.get("/", getProductsByFilters); //Lista de productos activos segun filtros.
+router.get("/item/:id", getProduct); //Producto en detalle
+router.get("/all/", getAllProducts); //Todos los productos activos.
 
 
-router.get("/product/:id", getProduct);
+router.post("/", [
+    checkToken,
+    isAdmin,
+    check("sku", "sku is required").not().isEmpty(),
+    check("tittle", "tittle is required").not().isEmpty(),
+    check("category", "category is required").not().isEmpty(),
+    check("color", "color is required").not().isEmpty(),
+    check("size", "size is required").not().isEmpty(),
+    check("price", "price is required").not().isEmpty(),
+    validarCampos
+
+], addProduct);
 
 router.put("/:id", [checkToken, isAdmin], updateProduct);
-router.delete("/:id", [checkToken, isAdmin], deleteProduct);
+
+router.delete("/:id", [checkToken, isAdmin], removeProduct);
 
 
 module.exports = router;
-
-//AGREGAR VALIDACIONES DE EXPRESS VALIDATOR

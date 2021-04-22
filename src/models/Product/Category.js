@@ -2,7 +2,13 @@ const { Schema, model } = require("mongoose");
 
 const CategorySchema = new Schema({
     name: {
-        type: String
+        type: String,
+        required: true
+    },
+    status:{
+        type: Boolean,
+        required: true,
+        default: true
     }
 },{
     versionKey:false

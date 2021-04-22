@@ -3,7 +3,7 @@ orderCtrl = {};
 const { Order } = require("../models");
 const { getOrderAmount } = require("../libs/getOrderAmount");
 
-const query = [
+const query_populate = [
     {
         path: 'user',
         select: {
@@ -24,16 +24,10 @@ const query = [
         path: 'products.product',
         select: {
             _id: 0,
-            quantity: 0,
-            tags: 0,
-            createdAt: 0,
-            updatedAt: 0
-        },
-        populate: [
-            { path: 'category', select: { _id: 0 } },
-            { path: 'size', select: { _id: 0 } },
-            { path: 'color', select: { _id: 0 } }
-        ]
+            sku: 1,
+            description: 1,
+            price: 1
+        }
     }
 ];
 
@@ -47,7 +41,7 @@ orderCtrl.getOrders = async (req, res) => {
         const [total, listOrders] = await Promise.all([
             Order.countDocuments(),
             Order.find()
-                .populate(query)
+                .populate(query_populate)
                 .skip(desde)
                 .limit(limite)
         ])
@@ -65,7 +59,7 @@ orderCtrl.getOrders = async (req, res) => {
 orderCtrl.getOrder = async (req, res) => {
 
     try {
-        const order = await Order.findById(req.params.id).populate(query);
+        const order = await Order.findById(req.params.id).populate(query_populate);
 
         if (order) {
             res.json(order);
@@ -84,7 +78,7 @@ orderCtrl.getOrder = async (req, res) => {
 
 orderCtrl.addOrder = async (req, res) => {
 
-    const { user, products } = req.body;
+    const { user, products} = req.body;
     const IVA = process.env.IVA;
 
     const subtotal = await getOrderAmount(products);

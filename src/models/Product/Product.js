@@ -26,16 +26,20 @@ const ProductSchema = new Schema({
     },
 
     color: {
-        ref: "Color",
-        type: Schema.Types.ObjectId,
+        type: String,
         required: true
     },
 
-    size: {
-        ref: "Size",
-        type: Schema.Types.ObjectId,
-        required: true
-    },
+    size: [{
+        name: {
+            type: String,
+            required: true
+        },
+        quantity: {
+            type: Number,
+            required: true
+        }
+    }],
 
     price: {
         type: Number,
@@ -47,11 +51,12 @@ const ProductSchema = new Schema({
         default: null
     },
 
-    quantity: {
-        type: Number,
-        required: true
+    status: {
+        type: Boolean,
+        required: true,
+        default: true
     }
-    
+
 }, {
     timestamps: true,
     versionKey: false

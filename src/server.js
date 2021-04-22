@@ -10,10 +10,12 @@ const productsRoutes = require("./routes/products.routes");
 const authRoutes = require("./routes/auth.routes");
 const usersRoutes = require("./routes/users.routes");
 const ordersRoutes = require("./routes/orders.routes");
-const categoryRoutes = require ("./routes/category.routes")
+const categoriesRoutes = require ("./routes/categories.routes")
+const colorsRoutes = require ("./routes/colors.routes")
+const sizesRoutes = require ("./routes/sizes.routes")
 
 app.get("/",(req,res)=>{
-    res.send("Cajú api")
+    res.send("Dominio api")
 })
 
 
@@ -32,8 +34,9 @@ app.use("/api/products", productsRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/users", usersRoutes);
 app.use("/api/orders", ordersRoutes);
-app.use("/api/category", categoryRoutes);
-
+app.use("/api/categories", categoriesRoutes);
+app.use("/api/colors", colorsRoutes);
+app.use("/api/sizes", sizesRoutes);
 
 
 module.exports = app
